@@ -1,22 +1,46 @@
-name: Deploy React App to GitHub Pages
+name: Deploy Vite-React to GitHub Pages
 
 on:
   push:
-    branches: [ main ]   # 你默认分支的名字
+    branches: [main]   # 默认分支名
+
+permissions:
+  contents: write      # 允许写 gh-pages 分支
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
+    env:
+      # ① 强制用 Node 24，消灭 deprecation 警告
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      # ② 更新到 v4，原生支持 Node 24
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build
+          node-version: 24
+          cache: npm          # 有 lock 文件才缓存；下面会自动生成
+
+      # ③ 没有 lock 文件时自动生成（消灭“Dependencies lock file is not found”）
+      - name: Generate lock file if missing
+        run: |
+          if [ ! -f package-lock.json ] && [ ! -f yarn.lock ] && [ ! -f pnpm-lock.yaml ]; then
+            npm install --package-lock-only
+          fi
+
+      - name: Install dependencies
+        run: npm ci   # 现在一定有 lock 文件了
+
+      - name: Build
+        run: npm run build        # Vite 默认输出 dist 目录
+
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist 
+          publish_dir: ./dist     # Vite 打包目录
