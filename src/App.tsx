@@ -93,33 +93,70 @@ const DAY_COLORS: Record<number, { border: string, bg: string, text: string, lab
 // --- Utils ---
 
 function useLongPress(onLongPress: () => void, onClick: () => void, ms = 500) {
-  const [startLongPress, setStartLongPress] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const isLongPressTriggered = useRef(false);
+  const isTouch = useRef(false);
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
 
-  const start = useCallback(() => {
-    setStartLongPress(true);
+  const start = useCallback((e: React.SyntheticEvent) => {
+    if (e.type === 'touchstart') {
+      isTouch.current = true;
+      const touchEvent = e as unknown as React.TouchEvent;
+      touchStartX.current = touchEvent.touches[0].clientX;
+      touchStartY.current = touchEvent.touches[0].clientY;
+    } else if (e.type === 'mousedown' && isTouch.current) {
+      return;
+    }
+    
+    isLongPressTriggered.current = false;
+    if (timerRef.current) clearTimeout(timerRef.current);
+    
     timerRef.current = setTimeout(() => {
+      isLongPressTriggered.current = true;
       onLongPress();
-      setStartLongPress(false);
     }, ms);
   }, [onLongPress, ms]);
 
-  const stop = useCallback(() => {
+  const move = useCallback((e: React.SyntheticEvent) => {
+    if (e.type === 'touchmove') {
+      const touchEvent = e as unknown as React.TouchEvent;
+      const moveX = Math.abs(touchEvent.touches[0].clientX - touchStartX.current);
+      const moveY = Math.abs(touchEvent.touches[0].clientY - touchStartY.current);
+      if (moveX > 10 || moveY > 10) {
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+          timerRef.current = null;
+        }
+      }
+    }
+  }, []);
+
+  const stop = useCallback((e: React.SyntheticEvent) => {
+    if (e.type === 'touchend' || e.type === 'touchcancel') {
+      setTimeout(() => { isTouch.current = false; }, 500);
+    } else if ((e.type === 'mouseup' || e.type === 'mouseleave') && isTouch.current) {
+      return;
+    }
+
     if (timerRef.current) {
       clearTimeout(timerRef.current);
-      if (startLongPress) {
+      timerRef.current = null;
+      
+      if (!isLongPressTriggered.current && (e.type === 'mouseup' || e.type === 'touchend')) {
         onClick();
       }
     }
-    setStartLongPress(false);
-  }, [onClick, startLongPress]);
+  }, [onClick]);
 
   return {
     onMouseDown: start,
     onMouseUp: stop,
     onMouseLeave: stop,
     onTouchStart: start,
+    onTouchMove: move,
     onTouchEnd: stop,
+    onTouchCancel: stop,
   };
 }
 
