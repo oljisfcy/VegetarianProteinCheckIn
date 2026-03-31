@@ -40,42 +40,42 @@ const FOOD_DATA: CategoryType[] = [
     categoryId: 'grains',
     categoryName: '谷类',
     items: [
-      { id: 'rice', name: '米', imageUrl: '/assets/rice.png', emoji: '🍚' },
-      { id: 'millet', name: '小米', imageUrl: '/assets/millet.png', emoji: '🌾' },
-      { id: 'corn', name: '玉米', imageUrl: '/assets/corn.png', emoji: '🌽' },
-      { id: 'oats', name: '燕麦', imageUrl: '/assets/oat.png', emoji: '🥣' },
-      { id: 'quinoa', name: '藜麦', imageUrl: '/assets/quinoa.png', emoji: '🥗' },
+      { id: 'rice', name: '米', imageUrl: 'images/rice.png', emoji: '🍚' },
+      { id: 'millet', name: '小米', imageUrl: 'images/millet.png', emoji: '🌾' },
+      { id: 'corn', name: '玉米', imageUrl: 'images/corn.png', emoji: '🌽' },
+      { id: 'oats', name: '燕麦', imageUrl: 'images/oat.png', emoji: '🥣' },
+      { id: 'quinoa', name: '藜麦', imageUrl: 'images/quinoa.png', emoji: '🥗' },
     ]
   },
   {
     categoryId: 'nuts',
     categoryName: '坚果',
     items: [
-      { id: 'almond', name: '杏仁', imageUrl: '/assets/almond.png', emoji: '🌰' },
-      { id: 'walnut', name: '核桃', imageUrl: '/assets/walnut.png', emoji: '🧠' },
-      { id: 'macadamia', name: '夏威夷果', imageUrl: '/assets/macadamia_nut.png', emoji: '🥥' },
-      { id: 'peanut', name: '花生', imageUrl: '/assets/peanut.png', emoji: '🥜' },
-      { id: 'cashew', name: '腰果', imageUrl: '/assets/cashew.png', emoji: '🧆' },
+      { id: 'almond', name: '杏仁', imageUrl: 'images/almond.png', emoji: '🌰' },
+      { id: 'walnut', name: '核桃', imageUrl: 'images/walnut.png', emoji: '🧠' },
+      { id: 'macadamia', name: '夏威夷果', imageUrl: 'images/macadamia_nut.png', emoji: '🥥' },
+      { id: 'peanut', name: '花生', imageUrl: 'images/peanut.png', emoji: '🥜' },
+      { id: 'cashew', name: '腰果', imageUrl: 'images/cashew.png', emoji: '🧆' },
     ]
   },
   {
     categoryId: 'beans',
     categoryName: '豆类',
     items: [
-      { id: 'various_beans', name: '各式豆类', imageUrl: '/assets/various_legumes.png', emoji: '🫘' },
-      { id: 'green_peas', name: '青豆', imageUrl: '/assets/pea.png', emoji: '🫛' },
-      { id: 'green_beans', name: '豆角', imageUrl: '/assets/green_beans.png', emoji: '🫛' },
-      { id: 'tofu', name: '豆腐', imageUrl: '/assets/tofu.png', emoji: '🧊' },
+      { id: 'various_beans', name: '各式豆类', imageUrl: 'images/various_legumes.png', emoji: '🫘' },
+      { id: 'green_peas', name: '青豆', imageUrl: 'images/pea.png', emoji: '🫛' },
+      { id: 'green_beans', name: '豆角', imageUrl: 'images/green_beans.png', emoji: '🫛' },
+      { id: 'tofu', name: '豆腐', imageUrl: 'images/tofu.png', emoji: '🧊' },
     ]
   },
   {
     categoryId: 'seeds',
     categoryName: '种子',
     items: [
-      { id: 'pumpkin_seeds', name: '南瓜籽', imageUrl: '/assets/pumpkin_seeds.png', emoji: '🎃' },
-      { id: 'chia_seeds', name: '奇亚籽', imageUrl: '/assets/chia_seeds.png', emoji: '🥄' },
-      { id: 'flax_seeds', name: '亚麻籽', imageUrl: '/assets/flaxseed.png', emoji: '🌾' },
-      { id: 'sesame', name: '芝麻', imageUrl: '/assets/sesame.png', emoji: '🥯' },
+      { id: 'pumpkin_seeds', name: '南瓜籽', imageUrl: 'images/pumpkin_seeds.png', emoji: '🎃' },
+      { id: 'chia_seeds', name: '奇亚籽', imageUrl: 'images/chia_seeds.png', emoji: '🥄' },
+      { id: 'flax_seeds', name: '亚麻籽', imageUrl: 'images/flaxseed.png', emoji: '🌾' },
+      { id: 'sesame', name: '芝麻', imageUrl: 'images/sesame.png', emoji: '🥯' },
     ]
   }
 ];
@@ -93,33 +93,70 @@ const DAY_COLORS: Record<number, { border: string, bg: string, text: string, lab
 // --- Utils ---
 
 function useLongPress(onLongPress: () => void, onClick: () => void, ms = 500) {
-  const [startLongPress, setStartLongPress] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const isLongPressTriggered = useRef(false);
+  const isTouch = useRef(false);
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
 
-  const start = useCallback(() => {
-    setStartLongPress(true);
+  const start = useCallback((e: React.SyntheticEvent) => {
+    if (e.type === 'touchstart') {
+      isTouch.current = true;
+      const touchEvent = e as unknown as React.TouchEvent;
+      touchStartX.current = touchEvent.touches[0].clientX;
+      touchStartY.current = touchEvent.touches[0].clientY;
+    } else if (e.type === 'mousedown' && isTouch.current) {
+      return;
+    }
+    
+    isLongPressTriggered.current = false;
+    if (timerRef.current) clearTimeout(timerRef.current);
+    
     timerRef.current = setTimeout(() => {
+      isLongPressTriggered.current = true;
       onLongPress();
-      setStartLongPress(false);
     }, ms);
   }, [onLongPress, ms]);
 
-  const stop = useCallback(() => {
+  const move = useCallback((e: React.SyntheticEvent) => {
+    if (e.type === 'touchmove') {
+      const touchEvent = e as unknown as React.TouchEvent;
+      const moveX = Math.abs(touchEvent.touches[0].clientX - touchStartX.current);
+      const moveY = Math.abs(touchEvent.touches[0].clientY - touchStartY.current);
+      if (moveX > 10 || moveY > 10) {
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+          timerRef.current = null;
+        }
+      }
+    }
+  }, []);
+
+  const stop = useCallback((e: React.SyntheticEvent) => {
+    if (e.type === 'touchend' || e.type === 'touchcancel') {
+      setTimeout(() => { isTouch.current = false; }, 500);
+    } else if ((e.type === 'mouseup' || e.type === 'mouseleave') && isTouch.current) {
+      return;
+    }
+
     if (timerRef.current) {
       clearTimeout(timerRef.current);
-      if (startLongPress) {
+      timerRef.current = null;
+      
+      if (!isLongPressTriggered.current && (e.type === 'mouseup' || e.type === 'touchend')) {
         onClick();
       }
     }
-    setStartLongPress(false);
-  }, [onClick, startLongPress]);
+  }, [onClick]);
 
   return {
     onMouseDown: start,
     onMouseUp: stop,
     onMouseLeave: stop,
     onTouchStart: start,
+    onTouchMove: move,
     onTouchEnd: stop,
+    onTouchCancel: stop,
   };
 }
 
