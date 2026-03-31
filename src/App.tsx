@@ -40,42 +40,42 @@ const FOOD_DATA: CategoryType[] = [
     categoryId: 'grains',
     categoryName: '谷类',
     items: [
-      { id: 'rice', name: '米', imageUrl: '/assets/rice.png', emoji: '🍚' },
-      { id: 'millet', name: '小米', imageUrl: '/assets/millet.png', emoji: '🌾' },
-      { id: 'corn', name: '玉米', imageUrl: '/assets/corn.png', emoji: '🌽' },
-      { id: 'oats', name: '燕麦', imageUrl: '/assets/oat.png', emoji: '🥣' },
-      { id: 'quinoa', name: '藜麦', imageUrl: '/assets/quinoa.png', emoji: '🥗' },
+      { id: 'rice', name: '米', imageUrl: 'images/rice.png', emoji: '🍚' },
+      { id: 'millet', name: '小米', imageUrl: 'images/millet.png', emoji: '🌾' },
+      { id: 'corn', name: '玉米', imageUrl: 'images/corn.png', emoji: '🌽' },
+      { id: 'oats', name: '燕麦', imageUrl: 'images/oat.png', emoji: '🥣' },
+      { id: 'quinoa', name: '藜麦', imageUrl: 'images/quinoa.png', emoji: '🥗' },
     ]
   },
   {
     categoryId: 'nuts',
     categoryName: '坚果',
     items: [
-      { id: 'almond', name: '杏仁', imageUrl: '/assets/almond.png', emoji: '🌰' },
-      { id: 'walnut', name: '核桃', imageUrl: '/assets/walnut.png', emoji: '🧠' },
-      { id: 'macadamia', name: '夏威夷果', imageUrl: '/assets/macadamia_nut.png', emoji: '🥥' },
-      { id: 'peanut', name: '花生', imageUrl: '/assets/peanut.png', emoji: '🥜' },
-      { id: 'cashew', name: '腰果', imageUrl: '/assets/cashew.png', emoji: '🧆' },
+      { id: 'almond', name: '杏仁', imageUrl: 'images/almond.png', emoji: '🌰' },
+      { id: 'walnut', name: '核桃', imageUrl: 'images/walnut.png', emoji: '🧠' },
+      { id: 'macadamia', name: '夏威夷果', imageUrl: 'images/macadamia_nut.png', emoji: '🥥' },
+      { id: 'peanut', name: '花生', imageUrl: 'images/peanut.png', emoji: '🥜' },
+      { id: 'cashew', name: '腰果', imageUrl: 'images/cashew.png', emoji: '🧆' },
     ]
   },
   {
     categoryId: 'beans',
     categoryName: '豆类',
     items: [
-      { id: 'various_beans', name: '各式豆类', imageUrl: '/assets/various_legumes.png', emoji: '🫘' },
-      { id: 'green_peas', name: '青豆', imageUrl: '/assets/pea.png', emoji: '🫛' },
-      { id: 'green_beans', name: '豆角', imageUrl: '/assets/green_beans.png', emoji: '🫛' },
-      { id: 'tofu', name: '豆腐', imageUrl: '/assets/tofu.png', emoji: '🧊' },
+      { id: 'various_beans', name: '各式豆类', imageUrl: 'images/various_legumes.png', emoji: '🫘' },
+      { id: 'green_peas', name: '青豆', imageUrl: 'images/pea.png', emoji: '🫛' },
+      { id: 'green_beans', name: '豆角', imageUrl: 'images/green_beans.png', emoji: '🫛' },
+      { id: 'tofu', name: '豆腐', imageUrl: 'images/tofu.png', emoji: '🧊' },
     ]
   },
   {
     categoryId: 'seeds',
     categoryName: '种子',
     items: [
-      { id: 'pumpkin_seeds', name: '南瓜籽', imageUrl: '/assets/pumpkin_seeds.png', emoji: '🎃' },
-      { id: 'chia_seeds', name: '奇亚籽', imageUrl: '/assets/chia_seeds.png', emoji: '🥄' },
-      { id: 'flax_seeds', name: '亚麻籽', imageUrl: '/assets/flaxseed.png', emoji: '🌾' },
-      { id: 'sesame', name: '芝麻', imageUrl: '/assets/sesame.png', emoji: '🥯' },
+      { id: 'pumpkin_seeds', name: '南瓜籽', imageUrl: 'images/pumpkin_seeds.png', emoji: '🎃' },
+      { id: 'chia_seeds', name: '奇亚籽', imageUrl: 'images/chia_seeds.png', emoji: '🥄' },
+      { id: 'flax_seeds', name: '亚麻籽', imageUrl: 'images/flaxseed.png', emoji: '🌾' },
+      { id: 'sesame', name: '芝麻', imageUrl: 'images/sesame.png', emoji: '🥯' },
     ]
   }
 ];
