@@ -430,6 +430,24 @@ function HistoryView({ records, onBack }: {
           </button>
         </div>
       </div>
+
+      {/* 图例 (Legend) */}
+      <div className="bg-white border border-gray-100 rounded-2xl p-4 mb-6 shadow-sm">
+        <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center">
+          {[1, 2, 3, 4, 5, 6, 7].map(day => {
+            const info = DAY_COLORS[day];
+            return (
+              <div key={day} className="flex items-center gap-1.5">
+                <div 
+                  className="w-2.5 h-2.5 rounded-full" 
+                  style={{ backgroundColor: info.hex }}
+                />
+                <span className="text-xs text-gray-500 font-medium">{info.label}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
       
       <div className="space-y-4">
         {weeks.length === 0 ? (
